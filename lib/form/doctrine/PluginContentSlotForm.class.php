@@ -81,7 +81,8 @@ abstract class PluginContentSlotForm extends BaseContentSlotForm
     {
       $return .= '<div class="sf_admin_form_row">';
       $return .= $widget->renderLabel();
-      $return .= $widget;
+      $return .= $widget->render(array('id'=>$widget->getWidget()->getAttribute('id')));
+      //$return .= $widget;
       $return .= $widget->renderHelp();
       $return .= '</div>';
     }

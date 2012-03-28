@@ -18,7 +18,8 @@ function get_sympal_yui_path($type, $name)
   $path .= '/'.$name;
 
   $minExceptions = array(
-    'yahoo-dom-event/yahoo-dom-event'
+    'yahoo-dom-event/yahoo-dom-event',
+    'utilities/utilities'
   );
   if (!sfConfig::get('sf_debug') && !in_array($name, $minExceptions) && $type == 'js')
   {
@@ -43,6 +44,7 @@ function use_sympal_yui_css($name)
 
 function use_sympal_yui_js($name)
 {
+  sfConfig::set('sf_compressed', false); // dont compress if YUI scripts are included, or else it gets ugly!
   return use_sympal_yui('js', $name);
 }
 
@@ -246,7 +248,7 @@ function get_sympal_content_slot($content, $name, $type = 'Text', $isColumn = fa
 
   if (sfSympalToolkit::isEditMode() && $content->userHasLock($user))
   {
-    $html  = '<span class="sympal_editable_content_slot" onMouseOver="javascript: highlight_sympal_content_slot(\''.$slot['id'].'\');" onMouseOut="javascript: unhighlight_sympal_content_slot(\''.$slot['id'].'\');" title="Double click to edit this slot named `'.$name.'`" id="edit_content_slot_button_'.$slot['id'].'" style="cursor: pointer;" onClick="javascript: edit_sympal_content_slot(\''.$slot['id'].'\');">';
+    $html  = '<span class="sympal_editable_content_slot" onMouseOver="javascript: highlight_sympal_content_slot(\''.$slot['id'].'\');" onMouseOut="javascript: unhighlight_sympal_content_slot(\''.$slot['id'].'\');" title="Double click to edit this slot named `'.$name.'`" id="edit_content_slot_button_'.$slot['id'].'" style="cursor: pointer;" onDblClick="javascript: edit_sympal_content_slot(\''.$slot['id'].'\');">';
     $html .= $renderedValue;
     $html .= '</span>';
 
@@ -266,12 +268,33 @@ function get_sympal_content_slot($content, $name, $type = 'Text', $isColumn = fa
 <script type="text/javascript">
 myPanel = new YAHOO.widget.Panel('edit_content_slot_%s', {
 	underlay:"shadow",
+	zIndex:75,
+	width:'645px',
+	iframe:false,
 	close:true,
 	visible:true,
 	context:['edit_content_slot_button_%s', 'tl', 'tl'],
   autofillheight: "body",
   constraintoviewport: false,
-	draggable:true} );
+	draggable:true	
+} );
+
+/**
+* This is the key..
+* The editable area is an iframe, so in Internet explorer it
+* covers elements even when it is set to visiblity hidden.
+* So basically we move it out of the way when it's hidden and
+* put it back when we show it.
+*/
+myPanel.hideEvent.subscribe(function() {
+    myEditors['content_slot_value_%s'].get('iframe').setStyle('position', 'absolute');
+    myEditors['content_slot_value_%s'].get('iframe').setStyle('left', '-9999px');
+});
+myPanel.showEvent.subscribe(function() {
+    myEditors['content_slot_value_%s'].get('iframe').setStyle('position', 'static');
+    myEditors['content_slot_value_%s'].get('iframe').setStyle('left', '');
+    myEditors['content_slot_value_%s']._setDesignMode('on');
+});
 
 myPanel.cfg.setProperty("underlay", "matte");
 myPanel.render();
@@ -282,6 +305,12 @@ YAHOO.util.Event.addListener("edit_content_slot_editor_panel_button_%s", "click"
 </script>
 EOF
     ,
+      $slot['id'],
+      $slot['id'],
+      $slot['id'],
+      $slot['id'],
+      $slot['id'],
+      $slot['id'],
       $slot['id'],
       $slot['id'],
       $slot['id'],

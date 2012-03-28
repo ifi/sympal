@@ -206,7 +206,7 @@ class sfSympalMenu implements ArrayAccess, Countable, IteratorAggregate
       return false;
     }
 
-    return $user->hasCredential($this->_credentials);
+    return $user->hasCredential($this->_credentials, false); // do not use 'and'
   }
 
   public function setLevel($level)

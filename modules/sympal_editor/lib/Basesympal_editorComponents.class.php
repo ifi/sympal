@@ -6,6 +6,7 @@ class Basesympal_editorComponents extends sfComponents
   {
     $this->form = new sfFormLanguage($this->getUser(), array('languages' => sfSympalConfig::get('language_codes', null, array($this->getUser()->getCulture()))));
     unset($this->form[$this->form->getCSRFFieldName()]);
+    $this->form->getWidgetSchema()->setFormFormatterName('list');
 
     $this->getContext()->getEventDispatcher()->notify(new sfEvent($this, 'sympal.load_change_language_form', array('form' => $this->form)));
   }

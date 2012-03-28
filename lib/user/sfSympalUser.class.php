@@ -12,7 +12,7 @@ class sfSympalUser extends sfBasicSecurityUser
     $access = true;
     $allPermissions = $content->getAllPermissions();
 
-    if ($this->isAuthenticated() && !$this->hasCredential($allPermissions))
+    if ($this->isAuthenticated() && !$this->hasCredential($allPermissions, false)) // false = 'or', not 'and'
     {
       $access = false;
     }

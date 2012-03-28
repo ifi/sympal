@@ -146,6 +146,7 @@ myPanel = new YAHOO.widget.Panel('sympal_edit_panel', {
 	width:"350px",
 	x:<?php echo $sf_user->getAttribute('sympal_editor_panel_x', 50) ?>,
 	y:<?php echo $sf_user->getAttribute('sympal_editor_panel_y', 50) ?>,
+	zIndex:1000,
 	close:false,
 	visible:true,
 	draggable:true} );

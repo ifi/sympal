@@ -1,12 +1,12 @@
-[?php include_stylesheets_for_form($form) ?]
-[?php include_javascripts_for_form($form) ?]
-
+[?php use_helper('MyAsset') ?]
 [?php use_sympal_yui_css('tabview/assets/skins/sam/tabview') ?]
-
 [?php use_sympal_yui_js('yahoo-dom-event/yahoo-dom-event') ?]
 [?php use_sympal_yui_js('element/element') ?]
 [?php use_sympal_yui_js('connection/connection') ?]
 [?php use_sympal_yui_js('tabview/tabview') ?]
+
+[?php use_stylesheets_for_form($form) ?]
+[?php use_javascripts_for_form($form) ?]
 
 <div class="sf_admin_form sympal_form">
   [?php echo $helper->getSymfonyResource('<?php echo $this->getModuleName() ?>', 'outside_form_header', array('form' => $form)) ?>
